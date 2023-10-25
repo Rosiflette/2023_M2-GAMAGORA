@@ -26,5 +26,29 @@ public class CreateSphere
     }
 
 
+    public bool UnionSpheres(CreateSphere s2, Vector3 pos)
+    {
+
+        return this.IsInside(pos) && s2.IsInside(pos);
+    }
+
+    public bool IntersectSpheres(CreateSphere s2, Vector3 pos)
+    {
+
+        return this.IsInside(pos) || s2.IsInside(pos);
+    }
+
+    public float PixelValue(Vector3 pos)
+    {
+        if (IsInside(pos))
+        {
+            return Vector3.Distance(pos, center);
+        }
+        return 0;
+    } 
+
+
+
+
 
 }
