@@ -38,14 +38,11 @@ public class Graph
     {
         try
         {
-            Node n = l_nodeList[pos];
-            return n;
+            return l_nodeList[pos];
         }
         catch (KeyNotFoundException)
         {
             return null;
-        }
-
-        
+        }        
     }
 }
