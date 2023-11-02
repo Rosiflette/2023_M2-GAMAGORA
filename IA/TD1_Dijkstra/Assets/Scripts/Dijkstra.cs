@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 
 public class Dijkstra 
@@ -31,6 +33,8 @@ public class Dijkstra
     private Dictionary<Node, int> dc_distance;
     private Dictionary<Node, Node> dc_prev;
     private List<Node> l_notVisited;
+
+    private List<Node> l_path = new List<Node>();
 
     
 
@@ -76,11 +80,20 @@ public class Dijkstra
 
 
     public void printPath(Node destination){
-        Debug.Log(" path " + destination.getName() +" distance " + dc_distance[destination]);
+        // Debug.Log(" path " + destination.getTile().name +" distance " + dc_distance[destination]);
+        // destination.getTile().GetComponent<SpriteRenderer>().color = Color.red;
+        Debug.Log(destination);
+        l_path.Add(destination);
+
         if(dc_distance[destination] == 0){
+            l_path.Reverse();
             return;
         }
         printPath(dc_prev[destination]);
+    }
+
+    public List<Node> getPath(){
+        return l_path;
     }
 
 

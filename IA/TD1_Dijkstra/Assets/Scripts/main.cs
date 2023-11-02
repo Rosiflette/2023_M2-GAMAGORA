@@ -15,25 +15,25 @@ class MainClass : MonoBehaviour {
     void Start()
     {
  
-        Graph Cities = new Graph();
+        // Graph Cities = new Graph();
 
-        Node NewYork = new Node("New York");
-        Node Miami = new Node("Miami");
-        Node Chicago = new Node("Chicago");
+        // Node NewYork = new Node("New York");
+        // Node Miami = new Node("Miami");
+        // Node Chicago = new Node("Chicago");
 
-        Cities.Add(NewYork);
-        Cities.Add(Miami);
-        Cities.Add(Chicago);
+        // Cities.Add(NewYork);
+        // Cities.Add(Miami);
+        // Cities.Add(Chicago);
 
-        NewYork.AddNeighbor(Miami, 1);
+        // NewYork.AddNeighbor(Miami, 1);
         
-        Miami.AddNeighbor(Chicago, 1);
+        // Miami.AddNeighbor(Chicago, 1);
 
         
 
-        Dijkstra c = new Dijkstra(Cities, NewYork);
-        Chicago.getName();
-        c.printPath(Chicago);
+        // Dijkstra c = new Dijkstra(Cities, NewYork);
+        // Chicago.getName();
+        // c.printPath(Chicago);
     
     } 
 } 
