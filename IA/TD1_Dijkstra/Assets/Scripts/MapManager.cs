@@ -5,6 +5,43 @@ using UnityEngine.Tilemaps;
 
 public class MapManager : MonoBehaviour
 {
+    #region Singleton
+    // La référence statique au singleton
+    private static MapManager _instance;
+    public static MapManager Instance
+    {
+        get
+        {
+            // Si l'instance n'existe pas, tentez de la trouver dans la scène
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<MapManager>();
+
+                // Si l'instance n'a pas été trouvée dans la scène, créez-la
+                if (_instance == null)
+                {
+                    GameObject singletonObject = new GameObject("MapManagerSingleton");
+                    _instance = singletonObject.AddComponent<MapManager>();
+                }
+            }
+
+            return _instance;
+        }
+    }
+
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+    }
+    #endregion
 
     [SerializeField] private Tilemap t_map;
     [SerializeField] private List<TileData> l_typesTile;
@@ -16,9 +53,7 @@ public class MapManager : MonoBehaviour
     private Dijkstra dij;
 
 
-
-
-    void Awake()
+    void Start()
     {
         dc_dataFromTiles = new Dictionary<TileBase, TileData>();
         foreach (TileData typeTile in l_typesTile)
@@ -29,12 +64,6 @@ public class MapManager : MonoBehaviour
             }
 
         }
-    }
-
-
-
-    void Start()
-    {
         BoundsInt _bounds = t_map.cellBounds;
         foreach (Vector3Int position in _bounds.allPositionsWithin)
         {
@@ -128,6 +157,13 @@ public class MapManager : MonoBehaviour
         }
 
 
+    }
+
+
+    public Vector3 getNextPos(GameObject en){
+
+        
+        return t_map.GetCellCenterWorld(dij.getPath()[1].getPosition());
     }
 
 
