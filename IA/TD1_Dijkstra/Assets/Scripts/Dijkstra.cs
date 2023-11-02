@@ -12,8 +12,6 @@ public class Dijkstra
     private List<Node> l_notVisited;
     private List<Node> l_path = new List<Node>();
 
-
-
     public Dijkstra(Graph g, Node source)
     {
         dc_distance = new Dictionary<Node, int>();
@@ -67,7 +65,7 @@ public class Dijkstra
         if(destination == null){
             return;
         }
-        
+
         l_path.Add(destination);
 
         if (dc_distance[destination] == 0)

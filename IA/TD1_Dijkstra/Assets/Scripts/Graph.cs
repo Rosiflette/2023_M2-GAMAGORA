@@ -34,11 +34,13 @@ public class Graph
         return l_nodeList;
     }
 
-    public Node getNodeByPosition(Vector3Int pos)
+    public Node getNodeByPosition(Vector3 pos)
     {
         try
         {
-            return l_nodeList[pos];
+            Vector3Int posInt = new Vector3Int((int) pos.x, (int) pos.y, (int) pos.z);
+
+            return l_nodeList[posInt];
         }
         catch (KeyNotFoundException)
         {

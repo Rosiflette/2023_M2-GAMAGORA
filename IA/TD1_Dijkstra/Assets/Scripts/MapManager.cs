@@ -8,9 +8,14 @@ public class MapManager : MonoBehaviour
 
     [SerializeField] private Tilemap t_map;
     [SerializeField] private List<TileData> l_typesTile;
+
+    [SerializeField] private GameObject go_character;
+    [SerializeField] private List<GameObject> go_ennemis;
     private Dictionary<TileBase, TileData> dc_dataFromTiles;
-    private Graph _graph = new Graph();
+    private Graph g_graph = new Graph();
     private Dijkstra dij;
+
+
 
 
     void Awake()
@@ -27,6 +32,7 @@ public class MapManager : MonoBehaviour
     }
 
 
+
     void Start()
     {
         BoundsInt _bounds = t_map.cellBounds;
@@ -35,11 +41,11 @@ public class MapManager : MonoBehaviour
             Tile tile = t_map.GetTile<Tile>(position);
             if (tile != null)
             {
-                _graph.Add(position, new Node(position, dc_dataFromTiles[tile]));
+                g_graph.Add(position, new Node(position, dc_dataFromTiles[tile]));
             }
         }
 
-        foreach (Node nodeDic in _graph.getNodes())
+        foreach (Node nodeDic in g_graph.getNodes())
         {
 
             Vector3Int v = nodeDic.getPosition();
@@ -49,23 +55,23 @@ public class MapManager : MonoBehaviour
             Vector3Int left = new Vector3Int(v.x + 1, v.y, v.z);
             Vector3Int right = new Vector3Int(v.x - 1, v.y, v.z);
 
-            Node neighbor = _graph.getNodeByPosition(top);
+            Node neighbor = g_graph.getNodeByPosition(top);
             if (neighbor != null)
             {
                 nodeDic.AddNeighbor(neighbor, 2);
             }
-            neighbor = _graph.getNodeByPosition(bottom);
+            neighbor = g_graph.getNodeByPosition(bottom);
             if (neighbor != null)
             {
                 nodeDic.AddNeighbor(neighbor, 2);
 
             }
-            neighbor = _graph.getNodeByPosition(right);
+            neighbor = g_graph.getNodeByPosition(right);
             if (neighbor != null)
             {
                 nodeDic.AddNeighbor(neighbor, 2);
             }
-            neighbor = _graph.getNodeByPosition(left);
+            neighbor = g_graph.getNodeByPosition(left);
             if (neighbor != null)
             {
                 nodeDic.AddNeighbor(neighbor, 2);
@@ -73,54 +79,58 @@ public class MapManager : MonoBehaviour
             }
         }
 
-        dij = new Dijkstra(_graph, _graph.getNodes()[0]);
-        dij.calculPath(_graph.getNodes()[0]);
-        ColorizeMap(dij.getPath(), Color.gray);
+
     }
 
     private void ColorizeMap(List<Node> path, Color col)
     {
         Tile tile;
-        bool startingTile = true;
         foreach (Node currentNode in path)
         {
-            if (startingTile)
-            {
-                Vector3Int position = currentNode.getPosition();
-                tile = t_map.GetTile<Tile>(position);
-                t_map.SetTileFlags(position, TileFlags.None);
-                t_map.SetColor(position, Color.gray);
-                startingTile = false;
-            }
-            else
-            {
                 Vector3Int position = currentNode.getPosition();
                 tile = t_map.GetTile<Tile>(position);
                 t_map.SetTileFlags(position, TileFlags.None);
                 t_map.SetColor(position, col);
-            }
-
         }
-
-
     }
 
     void Update()
     {
-        if (Input.GetMouseButtonUp(0))
+
+
+        // if (Input.GetMouseButtonUp(0))
+        // {
+        //     ColorizeMap(dij.getPath(), Color.white);
+        //     dij.ClearPath();
+        //     Vector2 v_mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //     Vector3Int gridPosition = t_map.WorldToCell(v_mousePosition);
+        //     Debug.Log("click pos : " + gridPosition);
+        //     dij.calculPath(g_graph.getNodeByPosition(gridPosition));
+        //     ColorizeMap(dij.getPath(), Color.red);
+
+        // }
+
+        Vector3Int _ennemiPosition = t_map.WorldToCell(go_ennemis[0].transform.position);
+        Node startNode = g_graph.getNodeByPosition(_ennemiPosition);
+        if (startNode != null)
         {
-            ColorizeMap(dij.getPath(), Color.white);
-            dij.ClearPath();
-            Vector2 v_mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector3Int gridPosition = t_map.WorldToCell(v_mousePosition);
+            if (dij != null)
+            {
+                ColorizeMap(dij.getPath(), Color.white);
+                dij.ClearPath();
+            }
 
-            TileBase clickedTile = t_map.GetTile(gridPosition);
-
-            dij.calculPath(_graph.getNodeByPosition(gridPosition));
-
+            dij = new Dijkstra(g_graph, startNode);
+            Vector2 _charPos = go_character.transform.position;
+            Vector3Int _characterPosition = t_map.WorldToCell(_charPos);
+            dij.calculPath(g_graph.getNodeByPosition(_characterPosition));
             ColorizeMap(dij.getPath(), Color.red);
-
         }
+
+
     }
+
+
+
 
 }
