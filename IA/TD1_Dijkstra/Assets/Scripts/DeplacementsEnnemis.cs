@@ -1,25 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class DeplacementsEnnemis : MonoBehaviour
 {
 
+    [SerializeField] private float speed;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        speed = speed * Time.deltaTime;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        Vector3 nextPos = MapManager.Instance.getNextPos(gameObject);
+        if (nextPos != Vector3.zero)
         {
-            Debug.Log("oui");
-            Vector3 nextPos = MapManager.Instance.getNextPos(gameObject);
-            gameObject.transform.position = nextPos;
+            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, nextPos, speed);
         }
+
     }
 }

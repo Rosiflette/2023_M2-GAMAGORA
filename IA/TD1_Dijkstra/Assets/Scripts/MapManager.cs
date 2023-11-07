@@ -52,6 +52,8 @@ public class MapManager : MonoBehaviour
     private Graph g_graph = new Graph();
     private Dijkstra dij;
 
+    private AStar astar;
+
 
     void Start()
     {
@@ -84,6 +86,11 @@ public class MapManager : MonoBehaviour
             Vector3Int left = new Vector3Int(v.x + 1, v.y, v.z);
             Vector3Int right = new Vector3Int(v.x - 1, v.y, v.z);
 
+            Vector3Int topLeft = new Vector3Int(v.x + 1, v.y + 1, v.z);
+            Vector3Int topRight = new Vector3Int(v.x - 1, v.y + 1, v.z);
+            Vector3Int botLeft = new Vector3Int(v.x + 1, v.y - 1, v.z);
+            Vector3Int botRight = new Vector3Int(v.x - 1, v.y - 1, v.z);
+
             Node neighbor = g_graph.getNodeByPosition(top);
             if (neighbor != null)
             {
@@ -104,7 +111,27 @@ public class MapManager : MonoBehaviour
             if (neighbor != null)
             {
                 nodeDic.AddNeighbor(neighbor, 2);
-
+            }
+            // Pour les diagonales mettre +1
+            neighbor = g_graph.getNodeByPosition(topLeft);
+            if (neighbor != null)
+            {
+                nodeDic.AddNeighbor(neighbor, 3);
+            }
+            neighbor = g_graph.getNodeByPosition(topRight);
+            if (neighbor != null)
+            {
+                nodeDic.AddNeighbor(neighbor, 3);
+            }
+            neighbor = g_graph.getNodeByPosition(botLeft);
+            if (neighbor != null)
+            {
+                nodeDic.AddNeighbor(neighbor, 3);
+            }
+            neighbor = g_graph.getNodeByPosition(botRight);
+            if (neighbor != null)
+            {
+                nodeDic.AddNeighbor(neighbor, 3);
             }
         }
 
@@ -116,10 +143,10 @@ public class MapManager : MonoBehaviour
         Tile tile;
         foreach (Node currentNode in path)
         {
-                Vector3Int position = currentNode.getPosition();
-                tile = t_map.GetTile<Tile>(position);
-                t_map.SetTileFlags(position, TileFlags.None);
-                t_map.SetColor(position, col);
+            Vector3Int position = currentNode.getPosition();
+            tile = t_map.GetTile<Tile>(position);
+            t_map.SetTileFlags(position, TileFlags.None);
+            t_map.SetColor(position, col);
         }
     }
 
@@ -143,27 +170,50 @@ public class MapManager : MonoBehaviour
         Node startNode = g_graph.getNodeByPosition(_ennemiPosition);
         if (startNode != null)
         {
-            if (dij != null)
+            // if (dij != null)
+            // {
+            //     ColorizeMap(dij.getPath(), Color.white);
+            //     dij.ClearPath();
+            // }
+
+            // dij = new Dijkstra(g_graph, startNode);
+            // Vector2 _charPos = go_character.transform.position;
+            // Vector3Int _characterPosition = t_map.WorldToCell(_charPos);
+            // dij.calculPath(g_graph.getNodeByPosition(_characterPosition));
+            // ColorizeMap(dij.getPath(), Color.red);
+
+            if (astar != null)
             {
-                ColorizeMap(dij.getPath(), Color.white);
-                dij.ClearPath();
+                ColorizeMap(astar.getPath(), Color.white);
+                astar.ClearPath();
             }
 
-            dij = new Dijkstra(g_graph, startNode);
+
             Vector2 _charPos = go_character.transform.position;
             Vector3Int _characterPosition = t_map.WorldToCell(_charPos);
-            dij.calculPath(g_graph.getNodeByPosition(_characterPosition));
-            ColorizeMap(dij.getPath(), Color.red);
+            astar = new AStar(g_graph, startNode, g_graph.getNodeByPosition(_characterPosition));
+            ColorizeMap(astar.getPath(), Color.red);
         }
-
-
     }
 
 
-    public Vector3 getNextPos(GameObject en){
+    // public Vector3 getNextPos(GameObject en)
+    // {
+    //     if (dij.getPath().Count > 1)
+    //     {
+    //         return t_map.GetCellCenterWorld(dij.getPath()[1].getPosition());
+    //     }
+    //     return new Vector3(0, 0, 0);
+    // }
 
-        
-        return t_map.GetCellCenterWorld(dij.getPath()[1].getPosition());
+
+    public Vector3 getNextPos(GameObject en)
+    {
+        if (astar.getPath().Count > 1)
+        {
+            return t_map.GetCellCenterWorld(astar.getPath()[1].getPosition());
+        }
+        return new Vector3(0, 0, 0);
     }
 
 
