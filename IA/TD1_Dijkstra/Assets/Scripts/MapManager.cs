@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class MapManager : MonoBehaviour
 {
@@ -48,6 +49,9 @@ public class MapManager : MonoBehaviour
 
     [SerializeField] private GameObject go_character;
     [SerializeField] private List<GameObject> go_ennemis;
+
+
+    [SerializeField] private GameObject fruitPrefab;
     private Dictionary<TileBase, TileData> dc_dataFromTiles;
     private Graph g_graph = new Graph();
     private Dijkstra dij;
@@ -163,9 +167,15 @@ public class MapManager : MonoBehaviour
         //     Debug.Log("click pos : " + gridPosition);
         //     dij.calculPath(g_graph.getNodeByPosition(gridPosition));
         //     ColorizeMap(dij.getPath(), Color.red);
-
         // }
 
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector2 v_mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3Int gridPosition = t_map.WorldToCell(v_mousePosition);
+            Instantiate(fruitPrefab, t_map.GetCellCenterWorld(gridPosition), Quaternion.identity);
+
+        }
         Vector3Int _ennemiPosition = t_map.WorldToCell(go_ennemis[0].transform.position);
         Node startNode = g_graph.getNodeByPosition(_ennemiPosition);
         if (startNode != null)
@@ -215,6 +225,9 @@ public class MapManager : MonoBehaviour
         }
         return new Vector3(0, 0, 0);
     }
+
+
+
 
 
 
