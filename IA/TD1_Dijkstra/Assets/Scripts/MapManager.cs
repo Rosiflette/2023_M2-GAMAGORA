@@ -101,47 +101,47 @@ public class MapManager : MonoBehaviour
             Vector3Int botLeft = new Vector3Int(v.x + 1, v.y - 1, v.z);
             Vector3Int botRight = new Vector3Int(v.x - 1, v.y - 1, v.z);
 
-            Node neighbor = g_graph.getNodeByPosition(top);
-            if (neighbor != null)
+            Node neighborTop = g_graph.getNodeByPosition(top);
+            if (neighborTop != null)
             {
-                nodeDic.AddNeighbor(neighbor, 2);
+                nodeDic.AddNeighbor(neighborTop, 2);
             }
-            neighbor = g_graph.getNodeByPosition(bottom);
-            if (neighbor != null)
+            Node neighborBot = g_graph.getNodeByPosition(bottom);
+            if (neighborBot != null)
             {
-                nodeDic.AddNeighbor(neighbor, 2);
+                nodeDic.AddNeighbor(neighborBot, 2);
 
             }
-            neighbor = g_graph.getNodeByPosition(right);
-            if (neighbor != null)
+            Node neighborRight = g_graph.getNodeByPosition(right);
+            if (neighborRight != null)
             {
-                nodeDic.AddNeighbor(neighbor, 2);
+                nodeDic.AddNeighbor(neighborRight, 2);
             }
-            neighbor = g_graph.getNodeByPosition(left);
-            if (neighbor != null)
+            Node neighborLeft = g_graph.getNodeByPosition(left);
+            if (neighborLeft != null)
             {
-                nodeDic.AddNeighbor(neighbor, 2);
+                nodeDic.AddNeighbor(neighborLeft, 2);
             }
             // Pour les diagonales mettre +1
-            neighbor = g_graph.getNodeByPosition(topLeft);
-            if (neighbor != null)
+            Node neighborTopLeft = g_graph.getNodeByPosition(topLeft);
+            if (neighborTopLeft != null && neighborTop != null && neighborLeft != null)
             {
-                nodeDic.AddNeighbor(neighbor, 3);
+                nodeDic.AddNeighbor(neighborTopLeft, 3);
             }
-            neighbor = g_graph.getNodeByPosition(topRight);
-            if (neighbor != null)
+            Node neighborTopRight = g_graph.getNodeByPosition(topRight);
+            if (neighborTopRight != null && neighborTop != null && neighborRight != null)
             {
-                nodeDic.AddNeighbor(neighbor, 3);
+                nodeDic.AddNeighbor(neighborTopRight, 3);
             }
-            neighbor = g_graph.getNodeByPosition(botLeft);
-            if (neighbor != null)
+            Node neighborBotLeft = g_graph.getNodeByPosition(botLeft);
+            if (neighborBotLeft != null && neighborBot != null && neighborLeft != null)
             {
-                nodeDic.AddNeighbor(neighbor, 3);
+                nodeDic.AddNeighbor(neighborBotLeft, 3);
             }
-            neighbor = g_graph.getNodeByPosition(botRight);
-            if (neighbor != null)
+            Node neighborBotRight = g_graph.getNodeByPosition(botRight);
+            if (neighborBotRight != null && neighborBot != null && neighborRight != null)
             {
-                nodeDic.AddNeighbor(neighbor, 3);
+                nodeDic.AddNeighbor(neighborBotRight, 3);
             }
         }
 
@@ -218,16 +218,19 @@ public class MapManager : MonoBehaviour
             Vector2 _charPos = go_character.transform.position;
             Vector3Int _characterPosition = t_map.WorldToCell(_charPos);
             astar = new AStar(g_graph, startNode, g_graph.getNodeByPosition(_characterPosition));
-            ColorizeMap(astar.getPath(), Color.red);
+            ColorizeMap(astar.getPath(), Color.blue);
         }
     }
 
 
     public Vector3 getNextPosDij(GameObject en)
     {
-        if (dij.getPath().Count > 1)
+        if(dij != null)
         {
-            return t_map.GetCellCenterWorld(dij.getPath()[1].getPosition());
+            if (dij.getPath().Count > 1)
+            {
+                return t_map.GetCellCenterWorld(dij.getPath()[1].getPosition());
+            }
         }
         return new Vector3(0, 0, 0);
     }
@@ -245,6 +248,12 @@ public class MapManager : MonoBehaviour
             }
         }
         return new Vector3(0, 0, 0);
+    }
+
+
+    public void IsFruitExisting(bool b)
+    {
+        b_isFruitExist = b;
     }
 
 

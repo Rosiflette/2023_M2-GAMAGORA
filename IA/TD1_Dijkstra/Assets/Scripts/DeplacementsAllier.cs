@@ -11,11 +11,11 @@ public class DeplacementsAllier : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        speed = speed * Time.deltaTime;
+        speed = speed * Time.fixedDeltaTime;
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         Vector3 nextPos = MapManager.Instance.getNextPosAStar(gameObject);
         if (nextPos != Vector3.zero)
@@ -27,8 +27,7 @@ public class DeplacementsAllier : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        
-        Debug.Log("Collision");
+        MapManager.Instance.IsFruitExisting(false);
         Destroy(other.gameObject);
     }
 

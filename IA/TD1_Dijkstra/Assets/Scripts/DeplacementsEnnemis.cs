@@ -11,11 +11,11 @@ public class DeplacementsEnnemis : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        speed = speed * Time.deltaTime;
+        speed = speed * Time.fixedDeltaTime;
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         Vector3 nextPos = MapManager.Instance.getNextPosDij(gameObject);
         if (nextPos != Vector3.zero)
