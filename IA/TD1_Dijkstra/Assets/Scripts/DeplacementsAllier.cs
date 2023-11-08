@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class DeplacementsEnnemis : MonoBehaviour
+public class DeplacementsAllier : MonoBehaviour
 {
 
     [SerializeField] private float speed;
@@ -17,11 +17,20 @@ public class DeplacementsEnnemis : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 nextPos = MapManager.Instance.getNextPosDij(gameObject);
+        Vector3 nextPos = MapManager.Instance.getNextPosAStar(gameObject);
         if (nextPos != Vector3.zero)
         {
             gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, nextPos, speed);
         }
 
     }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        
+        Debug.Log("Collision");
+        Destroy(other.gameObject);
+    }
+
+    
 }

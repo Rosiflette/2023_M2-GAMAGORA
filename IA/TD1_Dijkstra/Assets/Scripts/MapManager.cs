@@ -58,6 +58,12 @@ public class MapManager : MonoBehaviour
 
     private AStar astar;
 
+    private bool b_isFruitExist = false;
+
+    private GameObject currentFruit;
+
+
+
 
     void Start()
     {
@@ -157,47 +163,57 @@ public class MapManager : MonoBehaviour
     void Update()
     {
 
-
-        // if (Input.GetMouseButtonUp(0))
-        // {
-        //     ColorizeMap(dij.getPath(), Color.white);
-        //     dij.ClearPath();
-        //     Vector2 v_mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        //     Vector3Int gridPosition = t_map.WorldToCell(v_mousePosition);
-        //     Debug.Log("click pos : " + gridPosition);
-        //     dij.calculPath(g_graph.getNodeByPosition(gridPosition));
-        //     ColorizeMap(dij.getPath(), Color.red);
-        // }
-
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !b_isFruitExist)
         {
             Vector2 v_mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector3Int gridPosition = t_map.WorldToCell(v_mousePosition);
-            Instantiate(fruitPrefab, t_map.GetCellCenterWorld(gridPosition), Quaternion.identity);
-
+            currentFruit = Instantiate(fruitPrefab, t_map.GetCellCenterWorld(gridPosition), Quaternion.identity);
+            b_isFruitExist = true;
         }
+        if (b_isFruitExist)
+        {
+            CharacterDirection();
+        }
+        EnnemyDirection();
+
+    }
+
+
+    // Dijsktra utilisation
+    private void EnnemyDirection()
+    {
+
         Vector3Int _ennemiPosition = t_map.WorldToCell(go_ennemis[0].transform.position);
         Node startNode = g_graph.getNodeByPosition(_ennemiPosition);
         if (startNode != null)
         {
-            // if (dij != null)
-            // {
-            //     ColorizeMap(dij.getPath(), Color.white);
-            //     dij.ClearPath();
-            // }
+            if (dij != null)
+            {
+                ColorizeMap(dij.getPath(), Color.white);
+                dij.ClearPath();
+            }
 
-            // dij = new Dijkstra(g_graph, startNode);
-            // Vector2 _charPos = go_character.transform.position;
-            // Vector3Int _characterPosition = t_map.WorldToCell(_charPos);
-            // dij.calculPath(g_graph.getNodeByPosition(_characterPosition));
-            // ColorizeMap(dij.getPath(), Color.red);
+            dij = new Dijkstra(g_graph, startNode);
+            Vector2 _charPos = go_character.transform.position;
+            Vector3Int _characterPosition = t_map.WorldToCell(_charPos);
+            dij.calculPath(g_graph.getNodeByPosition(_characterPosition));
+            ColorizeMap(dij.getPath(), Color.red);
+        }
+    }
 
+    // Astar utilisation
+    private void CharacterDirection()
+    {
+
+        Vector3Int _ennemiPosition = t_map.WorldToCell(currentFruit.transform.position);
+        Node startNode = g_graph.getNodeByPosition(_ennemiPosition);
+        if (startNode != null)
+        {
             if (astar != null)
             {
                 ColorizeMap(astar.getPath(), Color.white);
                 astar.ClearPath();
             }
-
 
             Vector2 _charPos = go_character.transform.position;
             Vector3Int _characterPosition = t_map.WorldToCell(_charPos);
@@ -207,21 +223,26 @@ public class MapManager : MonoBehaviour
     }
 
 
-    // public Vector3 getNextPos(GameObject en)
-    // {
-    //     if (dij.getPath().Count > 1)
-    //     {
-    //         return t_map.GetCellCenterWorld(dij.getPath()[1].getPosition());
-    //     }
-    //     return new Vector3(0, 0, 0);
-    // }
-
-
-    public Vector3 getNextPos(GameObject en)
+    public Vector3 getNextPosDij(GameObject en)
     {
-        if (astar.getPath().Count > 1)
+        if (dij.getPath().Count > 1)
         {
-            return t_map.GetCellCenterWorld(astar.getPath()[1].getPosition());
+            return t_map.GetCellCenterWorld(dij.getPath()[1].getPosition());
+        }
+        return new Vector3(0, 0, 0);
+    }
+
+
+
+
+    public Vector3 getNextPosAStar(GameObject en)
+    {
+        if (astar != null)
+        {
+            if (astar.getPath().Count > 1)
+            {
+                return t_map.GetCellCenterWorld(astar.getPath()[1].getPosition());
+            }
         }
         return new Vector3(0, 0, 0);
     }
