@@ -20,6 +20,14 @@ public class DeplacementsEnnemis : MonoBehaviour
         Vector3 nextPos = MapManager.Instance.getNextPosDij(gameObject);
         if (nextPos != Vector3.zero)
         {
+            if (gameObject.transform.position.x > nextPos.x)
+            {
+                gameObject.GetComponentInChildren<SpriteRenderer>().flipX = true;
+            }
+            else
+            {
+                gameObject.GetComponentInChildren<SpriteRenderer>().flipX = false;
+            }
             gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, nextPos, speed);
         }
 
