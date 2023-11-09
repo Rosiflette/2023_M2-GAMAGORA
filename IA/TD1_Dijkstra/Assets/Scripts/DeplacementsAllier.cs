@@ -18,18 +18,16 @@ public class DeplacementsAllier : MonoBehaviour
     void FixedUpdate()
     {
         Vector3 nextPos = MapManager.Instance.getNextPosAStar(gameObject);
-        if (nextPos != Vector3.zero)
-        {
-            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, nextPos, speed);
-        }
-
+        gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, nextPos, speed);
+    
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
         MapManager.Instance.IsFruitExisting(false);
         Destroy(other.gameObject);
+        
     }
 
-    
+
 }

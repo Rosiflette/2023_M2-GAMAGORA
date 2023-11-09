@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
@@ -62,7 +63,7 @@ public class MapManager : MonoBehaviour
 
     private GameObject currentFruit;
 
-
+    private Node fruitNode;
 
 
     void Start()
@@ -169,9 +170,6 @@ public class MapManager : MonoBehaviour
             Vector3Int gridPosition = t_map.WorldToCell(v_mousePosition);
             currentFruit = Instantiate(fruitPrefab, t_map.GetCellCenterWorld(gridPosition), Quaternion.identity);
             b_isFruitExist = true;
-        }
-        if (b_isFruitExist)
-        {
             CharacterDirection();
         }
         EnnemyDirection();
@@ -202,22 +200,34 @@ public class MapManager : MonoBehaviour
     }
 
     // Astar utilisation
-    private void CharacterDirection()
+    public void CharacterDirection()
     {
 
-        Vector3Int _ennemiPosition = t_map.WorldToCell(currentFruit.transform.position);
-        Node startNode = g_graph.getNodeByPosition(_ennemiPosition);
-        if (startNode != null)
+        Vector3Int _fruitPosition = t_map.WorldToCell(currentFruit.transform.position);
+        fruitNode = g_graph.getNodeByPosition(_fruitPosition);
+        if (fruitNode != null)
         {
             if (astar != null)
             {
                 ColorizeMap(astar.getPath(), Color.white);
                 astar.ClearPath();
             }
-
             Vector2 _charPos = go_character.transform.position;
             Vector3Int _characterPosition = t_map.WorldToCell(_charPos);
-            astar = new AStar(g_graph, startNode, g_graph.getNodeByPosition(_characterPosition));
+            astar = new AStar(g_graph, fruitNode, g_graph.getNodeByPosition(_characterPosition));
+            ColorizeMap(astar.getPath(), Color.blue);
+        }
+    }
+
+    public void UpdateAStar()
+    {
+        Vector3Int _fruitPosition = t_map.WorldToCell(currentFruit.transform.position);
+        fruitNode = g_graph.getNodeByPosition(_fruitPosition);
+        if (fruitNode != null)
+        {
+            Vector2 _charPos = go_character.transform.position;
+            Vector3Int _characterPosition = t_map.WorldToCell(_charPos);
+            astar = new AStar(g_graph, fruitNode, g_graph.getNodeByPosition(_characterPosition));
             ColorizeMap(astar.getPath(), Color.blue);
         }
     }
@@ -225,17 +235,16 @@ public class MapManager : MonoBehaviour
 
     public Vector3 getNextPosDij(GameObject en)
     {
-        if(dij != null)
+        if (dij != null)
         {
             if (dij.getPath().Count > 1)
             {
                 return t_map.GetCellCenterWorld(dij.getPath()[1].getPosition());
             }
+            return t_map.GetCellCenterWorld(dij.getPath()[0].getPosition());
         }
         return new Vector3(0, 0, 0);
     }
-
-
 
 
     public Vector3 getNextPosAStar(GameObject en)
@@ -244,8 +253,18 @@ public class MapManager : MonoBehaviour
         {
             if (astar.getPath().Count > 1)
             {
-                return t_map.GetCellCenterWorld(astar.getPath()[1].getPosition());
+                Vector3 nextPos = t_map.GetCellCenterWorld(astar.getPath()[1].getPosition());
+                if (go_character.transform.position == nextPos)
+                {
+                    astar.getPath().RemoveAt(0);
+                }
+                else
+                {
+                    return t_map.GetCellCenterWorld(astar.getPath()[1].getPosition());
+                }
+
             }
+            return t_map.GetCellCenterWorld(astar.getPath()[0].getPosition());
         }
         return new Vector3(0, 0, 0);
     }
@@ -255,11 +274,6 @@ public class MapManager : MonoBehaviour
     {
         b_isFruitExist = b;
     }
-
-
-
-
-
 
 
 }
