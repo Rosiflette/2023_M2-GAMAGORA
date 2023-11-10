@@ -65,6 +65,9 @@ public class MapManager : MonoBehaviour
 
     private Node fruitNode;
 
+    [SerializeField] private Color birdPathColor;
+    [SerializeField] private Color girlPathColor;
+
 
     void Start()
     {
@@ -195,7 +198,7 @@ public class MapManager : MonoBehaviour
             Vector2 _charPos = go_character.transform.position;
             Vector3Int _characterPosition = t_map.WorldToCell(_charPos);
             dij.calculPath(g_graph.getNodeByPosition(_characterPosition));
-            ColorizeMap(dij.getPath(), Color.red);
+            ColorizeMap(dij.getPath(), girlPathColor);
         }
     }
 
@@ -215,23 +218,9 @@ public class MapManager : MonoBehaviour
             Vector2 _charPos = go_character.transform.position;
             Vector3Int _characterPosition = t_map.WorldToCell(_charPos);
             astar = new AStar(g_graph, fruitNode, g_graph.getNodeByPosition(_characterPosition));
-            ColorizeMap(astar.getPath(), Color.blue);
+            ColorizeMap(astar.getPath(), birdPathColor);
         }
     }
-
-    public void UpdateAStar()
-    {
-        Vector3Int _fruitPosition = t_map.WorldToCell(currentFruit.transform.position);
-        fruitNode = g_graph.getNodeByPosition(_fruitPosition);
-        if (fruitNode != null)
-        {
-            Vector2 _charPos = go_character.transform.position;
-            Vector3Int _characterPosition = t_map.WorldToCell(_charPos);
-            astar = new AStar(g_graph, fruitNode, g_graph.getNodeByPosition(_characterPosition));
-            ColorizeMap(astar.getPath(), Color.blue);
-        }
-    }
-
 
     public Vector3 getNextPosDij(GameObject en)
     {
