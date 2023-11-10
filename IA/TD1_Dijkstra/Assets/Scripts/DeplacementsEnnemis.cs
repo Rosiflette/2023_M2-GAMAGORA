@@ -17,6 +17,7 @@ public class DeplacementsEnnemis : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        
         Vector3 nextPos = MapManager.Instance.getNextPosDij(gameObject);
         if (nextPos != Vector3.zero)
         {

@@ -7,7 +7,6 @@ public class Map : MonoBehaviour
 
     [SerializeField] private int width;
     [SerializeField] private int height;
-
     [SerializeField] private GameObject tilePrefab;
 
     private List<GameObject> tiles;

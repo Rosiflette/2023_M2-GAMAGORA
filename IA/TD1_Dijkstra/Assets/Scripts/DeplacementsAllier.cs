@@ -18,22 +18,24 @@ public class DeplacementsAllier : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        
-        Vector3 nextPos = MapManager.Instance.getNextPosAStar(gameObject);
-        if (nextPos != Vector3.zero)
+        if (!MapManager.Instance.IsGameOver)
         {
-            if ((int)gameObject.transform.position.x != (int)nextPos.x)
+            Vector3 nextPos = MapManager.Instance.getNextPosAStar(gameObject);
+            if (nextPos != Vector3.zero)
             {
-                if ((int)gameObject.transform.position.x > (int)nextPos.x)
+                if ((int)gameObject.transform.position.x != (int)nextPos.x)
                 {
-                    gameObject.GetComponentInChildren<SpriteRenderer>().flipX = true;
+                    if ((int)gameObject.transform.position.x > (int)nextPos.x)
+                    {
+                        gameObject.GetComponentInChildren<SpriteRenderer>().flipX = true;
+                    }
+                    else
+                    {
+                        gameObject.GetComponentInChildren<SpriteRenderer>().flipX = false;
+                    }
                 }
-                else
-                {
-                    gameObject.GetComponentInChildren<SpriteRenderer>().flipX = false;
-                }
+                gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, nextPos, speed / MapManager.Instance.getCurrentTileSpeed());
             }
-            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, nextPos, speed/MapManager.Instance.getCurrentTileSpeed());
         }
 
     }
@@ -47,9 +49,7 @@ public class DeplacementsAllier : MonoBehaviour
         }
         if (other.tag == "Ennemi")
         {
-            Debug.Log("You loose");
-            Time.timeScale = 0f;
-
+            MapManager.Instance.RunLoose();
         }
 
     }

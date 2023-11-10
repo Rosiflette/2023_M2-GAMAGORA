@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -40,7 +42,6 @@ public class MapManager : MonoBehaviour
         else
         {
             _instance = this;
-            DontDestroyOnLoad(this.gameObject);
         }
     }
     #endregion
@@ -53,6 +54,8 @@ public class MapManager : MonoBehaviour
 
 
     [SerializeField] private GameObject fruitPrefab;
+
+    [SerializeField] private TextMeshProUGUI t_gameText;
     private Dictionary<TileBase, TileData> dc_dataFromTiles;
     private Graph g_graph = new Graph();
     private Dijkstra dij;
@@ -67,6 +70,8 @@ public class MapManager : MonoBehaviour
 
     [SerializeField] private Color birdPathColor;
     [SerializeField] private Color girlPathColor;
+
+    private bool b_isGameOver = false;
 
 
     void Start()
@@ -167,39 +172,44 @@ public class MapManager : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetMouseButtonDown(0) && !b_isFruitExist)
+        if (Input.GetMouseButtonDown(0) && !b_isFruitExist && !IsGameOver)
         {
             Vector2 v_mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector3Int gridPosition = t_map.WorldToCell(v_mousePosition);
-            currentFruit = Instantiate(fruitPrefab, t_map.GetCellCenterWorld(gridPosition), Quaternion.identity);
-            b_isFruitExist = true;
-            CharacterDirection();
+            if (t_map.GetTile<Tile>(gridPosition) != null)
+            {
+                currentFruit = Instantiate(fruitPrefab, t_map.GetCellCenterWorld(gridPosition), Quaternion.identity);
+                b_isFruitExist = true;
+                CharacterDirection();
+            }
         }
         EnnemyDirection();
-
     }
 
 
     // Dijsktra utilisation
     private void EnnemyDirection()
     {
-
-        Vector3Int _ennemiPosition = t_map.WorldToCell(go_ennemis[0].transform.position);
-        Node startNode = g_graph.getNodeByPosition(_ennemiPosition);
-        if (startNode != null)
+        if (t_map != null)
         {
-            if (dij != null)
+            Vector3Int _ennemiPosition = t_map.WorldToCell(go_ennemis[0].transform.position);
+            Node startNode = g_graph.getNodeByPosition(_ennemiPosition);
+            if (startNode != null)
             {
-                ColorizeMap(dij.getPath(), Color.white);
-                dij.ClearPath();
-            }
+                if (dij != null)
+                {
+                    ColorizeMap(dij.getPath(), Color.white);
+                    dij.ClearPath();
+                }
 
-            dij = new Dijkstra(g_graph, startNode);
-            Vector2 _charPos = go_character.transform.position;
-            Vector3Int _characterPosition = t_map.WorldToCell(_charPos);
-            dij.calculPath(g_graph.getNodeByPosition(_characterPosition));
-            ColorizeMap(dij.getPath(), girlPathColor);
+                dij = new Dijkstra(g_graph, startNode);
+                Vector2 _charPos = go_character.transform.position;
+                Vector3Int _characterPosition = t_map.WorldToCell(_charPos);
+                dij.calculPath(g_graph.getNodeByPosition(_characterPosition));
+                ColorizeMap(dij.getPath(), girlPathColor);
+            }
         }
+
     }
 
     // Astar utilisation
@@ -224,7 +234,7 @@ public class MapManager : MonoBehaviour
 
     public Vector3 getNextPosDij(GameObject en)
     {
-        if (dij != null)
+        if (dij != null && t_map != null)
         {
             if (dij.getPath().Count > 1)
             {
@@ -238,7 +248,7 @@ public class MapManager : MonoBehaviour
 
     public Vector3 getNextPosAStar(GameObject en)
     {
-        if (astar != null)
+        if (astar != null && t_map != null)
         {
             if (astar.getPath().Count > 1)
             {
@@ -270,6 +280,24 @@ public class MapManager : MonoBehaviour
         Vector3Int _characterPosition = t_map.WorldToCell(_charPos);
         Tile tile = t_map.GetTile<Tile>(_characterPosition);
         return dc_dataFromTiles[tile].walkingspeed;
+    }
+
+    public bool IsGameOver
+    {
+        get => b_isGameOver;
+        set => b_isGameOver = value;
+    }
+
+    public void RunLoose()
+    {
+        IsGameOver = true;
+        Animator animBird = GameObject.Find("Player").GetComponentInChildren<Animator>();
+        Animator animEnnemi = GameObject.Find("Ennemi").GetComponentInChildren<Animator>();
+        animBird.SetBool("isDead", true);
+        animEnnemi.SetBool("isDead", true);
+        t_gameText.SetText("YOU LOOSE");
+        Debug.Log("You loose");
+        // Time.timeScale = 0f;
     }
 
 
