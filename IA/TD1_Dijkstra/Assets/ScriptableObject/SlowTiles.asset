@@ -10,9 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e1a61c4b4d6547546aba918ad0f10320, type: 3}
-  m_Name: GroundTile
+  m_Name: SlowTiles
   m_EditorClassIdentifier: 
   tiles:
-  - {fileID: 11400000, guid: b434a88246d46f94ea33b064c093c83e, type: 2}
-  - {fileID: 11400000, guid: b03ef1aa61ca28942bc08d2f22576d8c, type: 2}
-  walkingspeed: 2
+  - {fileID: 11400000, guid: c5b9cea2bd8087a49935d4bb188e76ea, type: 2}
+  walkingspeed: 5

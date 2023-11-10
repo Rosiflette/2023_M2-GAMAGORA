@@ -108,44 +108,44 @@ public class MapManager : MonoBehaviour
             Node neighborTop = g_graph.getNodeByPosition(top);
             if (neighborTop != null)
             {
-                nodeDic.AddNeighbor(neighborTop, 2);
+                nodeDic.AddNeighbor(neighborTop, nodeDic.getSpeed());
             }
             Node neighborBot = g_graph.getNodeByPosition(bottom);
             if (neighborBot != null)
             {
-                nodeDic.AddNeighbor(neighborBot, 2);
+                nodeDic.AddNeighbor(neighborBot, nodeDic.getSpeed());
 
             }
             Node neighborRight = g_graph.getNodeByPosition(right);
             if (neighborRight != null)
             {
-                nodeDic.AddNeighbor(neighborRight, 2);
+                nodeDic.AddNeighbor(neighborRight, nodeDic.getSpeed());
             }
             Node neighborLeft = g_graph.getNodeByPosition(left);
             if (neighborLeft != null)
             {
-                nodeDic.AddNeighbor(neighborLeft, 2);
+                nodeDic.AddNeighbor(neighborLeft, nodeDic.getSpeed());
             }
             // Pour les diagonales mettre +1
             Node neighborTopLeft = g_graph.getNodeByPosition(topLeft);
             if (neighborTopLeft != null && neighborTop != null && neighborLeft != null)
             {
-                nodeDic.AddNeighbor(neighborTopLeft, 3);
+                nodeDic.AddNeighbor(neighborTopLeft, nodeDic.getSpeed() + 1);
             }
             Node neighborTopRight = g_graph.getNodeByPosition(topRight);
             if (neighborTopRight != null && neighborTop != null && neighborRight != null)
             {
-                nodeDic.AddNeighbor(neighborTopRight, 3);
+                nodeDic.AddNeighbor(neighborTopRight, nodeDic.getSpeed() + 1);
             }
             Node neighborBotLeft = g_graph.getNodeByPosition(botLeft);
             if (neighborBotLeft != null && neighborBot != null && neighborLeft != null)
             {
-                nodeDic.AddNeighbor(neighborBotLeft, 3);
+                nodeDic.AddNeighbor(neighborBotLeft, nodeDic.getSpeed() + 1);
             }
             Node neighborBotRight = g_graph.getNodeByPosition(botRight);
             if (neighborBotRight != null && neighborBot != null && neighborRight != null)
             {
-                nodeDic.AddNeighbor(neighborBotRight, 3);
+                nodeDic.AddNeighbor(neighborBotRight, nodeDic.getSpeed() + 1);
             }
         }
 
@@ -262,6 +262,14 @@ public class MapManager : MonoBehaviour
     public void IsFruitExisting(bool b)
     {
         b_isFruitExist = b;
+    }
+
+    public float getCurrentTileSpeed()
+    {
+        Vector2 _charPos = go_character.transform.position;
+        Vector3Int _characterPosition = t_map.WorldToCell(_charPos);
+        Tile tile = t_map.GetTile<Tile>(_characterPosition);
+        return dc_dataFromTiles[tile].walkingspeed;
     }
 
 

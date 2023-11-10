@@ -7,14 +7,14 @@ using UnityEngine.Tilemaps;
 
 public class Dijkstra
 {
-    private Dictionary<Node, int> dc_distance;
+    private Dictionary<Node, float> dc_distance;
     private Dictionary<Node, Node> dc_prev;
     private List<Node> l_notVisited;
     private List<Node> l_path = new List<Node>();
 
     public Dijkstra(Graph g, Node source)
     {
-        dc_distance = new Dictionary<Node, int>();
+        dc_distance = new Dictionary<Node, float>();
         dc_prev = new Dictionary<Node, Node>();
         l_notVisited = new List<Node>();
 
@@ -33,9 +33,9 @@ public class Dijkstra
             Node currentNode = getMinNode();
             l_notVisited.Remove(currentNode);
 
-            foreach (KeyValuePair<Node, int> neighbor in currentNode.getNeighbors())
+            foreach (KeyValuePair<Node, float> neighbor in currentNode.getNeighbors())
             {
-                int sumEdge = dc_distance[currentNode] + neighbor.Value;
+                float sumEdge = dc_distance[currentNode] + neighbor.Value;
                 if (sumEdge < dc_distance[neighbor.Key])
                 {
                     dc_distance[neighbor.Key] = sumEdge;

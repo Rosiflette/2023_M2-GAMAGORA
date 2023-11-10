@@ -8,6 +8,7 @@ public class DeplacementsAllier : MonoBehaviour
 
     [SerializeField] private float speed;
 
+    private float tileSpeed;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,6 +18,7 @@ public class DeplacementsAllier : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        
         Vector3 nextPos = MapManager.Instance.getNextPosAStar(gameObject);
         if (nextPos != Vector3.zero)
         {
@@ -31,7 +33,7 @@ public class DeplacementsAllier : MonoBehaviour
                     gameObject.GetComponentInChildren<SpriteRenderer>().flipX = false;
                 }
             }
-            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, nextPos, speed);
+            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, nextPos, speed/MapManager.Instance.getCurrentTileSpeed());
         }
 
     }

@@ -61,7 +61,7 @@ public class AStar
 
             l_toVisit.Remove(currentNode);
 
-            foreach (KeyValuePair<Node, int> neighbor in currentNode.getNeighbors())
+            foreach (KeyValuePair<Node, float> neighbor in currentNode.getNeighbors())
             {
 
                 float distanceOriginNeighbor = dc_distance[currentNode] + neighbor.Value;
