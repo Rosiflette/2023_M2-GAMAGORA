@@ -19,6 +19,11 @@ public class Boids : MonoBehaviour
 
     }
 
+    float Distance()
+    {
+
+    }
+
     // Start is called before the first frame update
     void Start()
     {
