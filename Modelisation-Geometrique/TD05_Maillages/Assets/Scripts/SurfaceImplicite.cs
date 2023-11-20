@@ -19,7 +19,8 @@ public class SurfaceImplicite : MonoBehaviour
                 {
                     Vector3 pos = new Vector3(x, y, z);
                     //GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    Instantiate(pref, g.LocalToCell(pos), Quaternion.identity);
+                    GameObject go = Instantiate(pref, g.LocalToCell(pos), Quaternion.identity);
+
                     //cube.transform.position = g.LocalToCell(pos);
                     //cube.AddComponent<ManageCube>
 
@@ -33,4 +34,6 @@ public class SurfaceImplicite : MonoBehaviour
     {
         
     }
+
+
 }
