@@ -14,6 +14,8 @@ public class BoidsManager : MonoBehaviour
     [SerializeField] private float returnInRectangleVelocity;
     [SerializeField] private Vector3 minPos;
     [SerializeField] private Vector3 maxPos;
+    [SerializeField] private List<Transform> attractions;
+    [SerializeField] private int attractionForce;
 
     List<Boid> l_boids = new List<Boid>();
 
@@ -45,16 +47,17 @@ public class BoidsManager : MonoBehaviour
 
     void move_all_boids_to_new_positions()
     {
-        Vector3 v1, v2, v3, v4 = new Vector3();
+        Vector3 v1, v2, v3, v4, v5 = new Vector3();
 
         foreach (Boid b in l_boids)
         {
             v1 = rule1(b);
             v2 = rule2(b);
             v3 = rule3(b);
-            v4 = bound_position(b);
+            //v4 = bound_position(b);
+            v5 = tend_to_place(b);
 
-            b.velocity = b.velocity + v1 + v2 + v3 + v4;
+            b.velocity = b.velocity + v1 + v2 + v3  + v5;
             limit_velocity(b);
             b.setPosition(b.getPosition() + b.velocity);
 
@@ -126,6 +129,24 @@ public class BoidsManager : MonoBehaviour
             b.velocity = (b.velocity / b.velocity.magnitude) * vlimNormalized;
         }
     }
+
+    Vector3 tend_to_place(Boid b)
+    {
+
+        int indMinDistance = 0;
+        float minDistance = Vector3.Distance(attractions[0].position, b.getPosition());
+        for (int i = 0; i < attractions.Count; i++)
+        {
+            if(Vector3.Distance(attractions[i].position, b.getPosition()) < minDistance)
+            {
+                indMinDistance = i;
+                minDistance = Vector3.Distance(attractions[i].position, b.getPosition());
+            }
+        }
+        return (attractions[indMinDistance].position - b.getPosition()) / attractionForce;
+    }
+
+
 
 
     Vector3 bound_position(Boid b){
