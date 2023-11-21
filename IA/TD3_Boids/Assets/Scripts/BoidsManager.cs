@@ -108,7 +108,7 @@ public class BoidsManager : MonoBehaviour
 
         b.velocity = b.velocity + v1;
         limit_velocity(b);
-        b.setPosition(b.getPosition() + b.velocity);
+        b.setPosition(b.getPosition() + b.velocity*30 * Time.deltaTime);
 
     }
 
