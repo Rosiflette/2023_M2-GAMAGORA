@@ -7,8 +7,11 @@ public class Boid : MonoBehaviour
 
     public Vector3 velocity = new Vector3();
 
+    public StateMachine.State currentState;
+
     public Boid(Vector3 _velocity)
     {
+        currentState = StateMachine.State.move;
         velocity = _velocity;
     }
 

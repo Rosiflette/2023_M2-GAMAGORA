@@ -296,7 +296,7 @@ public class MapManager : MonoBehaviour
         animEnnemi.SetBool("isDead", true);
         t_gameText.SetText("YOU LOSE");
         Debug.Log("You lose");
-        // Time.timeScale = 0f;
+        StateMachine.Instance.currentState = StateMachine.State.gameLose;
     }
 
 
