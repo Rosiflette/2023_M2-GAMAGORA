@@ -17,12 +17,10 @@ public class BoidsManager : MonoBehaviour
     [SerializeField] private float returnInRectangleVelocity;
     [SerializeField] private Vector3 minPos;
     [SerializeField] private Vector3 maxPos;
-    [SerializeField] private List<Transform> attractions;
+    [SerializeField] private List<Vector3> attractions;
     [SerializeField] private int attractionForce;
     [SerializeField] private Transform characterPos;
-
     [SerializeField] private float repulsionForce;
-
     [SerializeField] private float distanceToCharacter;
 
     List<Boid> l_boids = new List<Boid>();
@@ -33,6 +31,7 @@ public class BoidsManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        attractions = MapManager.Instance.getSlowTilePosition();
         initialise_positions();
     }
 
@@ -42,6 +41,7 @@ public class BoidsManager : MonoBehaviour
 
         foreach (Boid b in l_boids)
         {
+
             if (Vector3.Distance(b.getPosition(), characterPos.position) < distanceToCharacter)
             {
                 b.currentState = StateMachine.State.runAway;
@@ -85,8 +85,8 @@ public class BoidsManager : MonoBehaviour
     {
         Vector3 v1 = new Vector3();
 
-
         List<Boid> neighbors = new List<Boid>();
+
         foreach (Boid boid in l_boids)
         {
             if (Vector3.Distance(boid.getPosition(), b.getPosition()) < 0.1)
@@ -94,6 +94,7 @@ public class BoidsManager : MonoBehaviour
                 neighbors.Add(boid);
             }
         }
+        
 
         v1 = rule1(b, neighbors);
         v1 += rule2(b, neighbors);
@@ -109,7 +110,6 @@ public class BoidsManager : MonoBehaviour
         limit_velocity(b);
         b.setPosition(b.getPosition() + b.velocity);
 
-        // }
     }
 
     Vector3 rule1(Boid bj, List<Boid> listBoid)
@@ -126,7 +126,7 @@ public class BoidsManager : MonoBehaviour
         float N = l_boids.Count;
         pcj = pcj / (N - 1);
 
-        return (pcj - bj.getPosition()) / 100;
+        return (pcj - bj.getPosition()) / 1000;
     }
 
     Vector3 rule2(Boid bj, List<Boid> listBoid)
@@ -186,19 +186,19 @@ public class BoidsManager : MonoBehaviour
     {
 
         int indMinDistance = 0;
-        float minDistance = Vector3.Distance(attractions[0].position, b.getPosition());
+        float minDistance = Vector3.Distance(attractions[0], b.getPosition());
 
         for (int i = 0; i < attractions.Count; i++)
         {
-            if (Vector3.Distance(attractions[i].position, b.getPosition()) < minDistance)
+            if (Vector3.Distance(attractions[i], b.getPosition()) < minDistance)
             {
                 indMinDistance = i;
-                minDistance = Vector3.Distance(attractions[i].position, b.getPosition());
+                minDistance = Vector3.Distance(attractions[i], b.getPosition());
             }
         }
 
 
-        return (attractions[indMinDistance].position - b.getPosition()) / attractionForce;
+        return (attractions[indMinDistance] - b.getPosition()) / attractionForce;
     }
 
 

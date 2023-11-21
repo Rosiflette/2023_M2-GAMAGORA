@@ -120,4 +120,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   velocity: {x: 0.01, y: 0.01, z: 0}
-  v3_position: {x: 0, y: 0, z: 0}
+  currentState: 0

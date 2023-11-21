@@ -299,5 +299,17 @@ public class MapManager : MonoBehaviour
         StateMachine.Instance.currentState = StateMachine.State.gameLose;
     }
 
+    public List<Vector3> getSlowTilePosition(){
+        List<Vector3> list = new List<Vector3>();
+
+        
+        foreach(Node node in g_graph.getNodes()){
+            if(node.getTile() == l_typesTile[1]){
+                list.Add(t_map.CellToWorld(node.getPosition())+new Vector3(0,0.25f,0));
+            }
+        }
+        return list;
+    }
+
 
 }
