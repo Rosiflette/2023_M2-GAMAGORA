@@ -45,6 +45,14 @@ public class Triangles : MonoBehaviour
             Vector3 end = new Vector3(gridSizeX * cellSizeX, yPos, 0);
             Gizmos.DrawLine(start, end);
         }
+
+        Gizmos.color = Color.blue;
+        foreach (Triangle tri in listTriangles)
+        {
+            Gizmos.DrawLine(tri.vecteur1.position, tri.vecteur2.position);
+            Gizmos.DrawLine(tri.vecteur2.position, tri.vecteur3.position);
+            Gizmos.DrawLine(tri.vecteur3.position, tri.vecteur1.position);
+        }
     }
     // Start is called before the first frame update
     void Start()
@@ -59,17 +67,61 @@ public class Triangles : MonoBehaviour
         DrawTriangles();
         Debug.Log(isInSameCell(listTriangles[0].vecteur1, listTriangles[0].vecteur2));
 
-        if (Input.GetKey(KeyCode.Escape))
+        if (Input.GetKey(KeyCode.Space))
         {
-            if(isInSameCell(listTriangles[0].vecteur1, listTriangles[0].vecteur2)){
-                //fusePoints(0, listTriangles[0].vecteur2);
-            }
+
+                fusePoints();
+            
         }
     }
 
-    void fusePoints(int indTriangle1, int indTriangle2)
+    void fusePoints()
     {
+        List<Transform> vertices = new List<Transform>();
+        Dictionary<Vector3Int, Vector3> temp = new Dictionary<Vector3Int, Vector3>();
+        Dictionary<Vector3Int, int> count = new Dictionary<Vector3Int, int>();
+        Dictionary<Vector3Int, Transform> transforms = new Dictionary<Vector3Int, Transform>();
 
+        foreach (Transform vertex in transform)
+        {
+            Vector3Int roundedPos = Vector3Int.FloorToInt(vertex.position);
+            if (!count.ContainsKey(roundedPos))
+            {
+                count[roundedPos] = 0;
+                temp[roundedPos] = Vector3.zero;
+            }
+
+            count[roundedPos]++;
+            temp[roundedPos] += vertex.position;
+
+            vertices.Add(vertex);
+        }
+
+        foreach (var item in temp)
+        {
+            Vector3 pos = temp[item.Key] / count[item.Key];
+
+            GameObject newPoint = new GameObject($"point_{pos.x}-{pos.y}");
+            newPoint.transform.position = pos;
+            newPoint.transform.parent = transform;
+
+            transforms[item.Key] = newPoint.transform;
+        }
+
+        foreach (Triangle tri in listTriangles)
+        {
+            Vector3Int roundedPos = Vector3Int.FloorToInt(tri.vecteur1.position);
+            tri.vecteur1 = transforms[roundedPos];
+            roundedPos = Vector3Int.FloorToInt(tri.vecteur2.position);
+            tri.vecteur2 = transforms[roundedPos];
+            roundedPos = Vector3Int.FloorToInt(tri.vecteur3.position);
+            tri.vecteur3 = transforms[roundedPos];
+        }
+
+        foreach (Transform vertex in vertices)
+        {
+            Destroy(vertex.gameObject);
+        }
     }
 
     bool isInSameCell(Transform element1, Transform element2)
