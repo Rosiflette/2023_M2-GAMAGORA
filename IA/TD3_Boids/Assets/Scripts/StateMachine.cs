@@ -45,7 +45,8 @@ public class StateMachine : MonoBehaviour
     public enum State{
         move,
         gameLose,
-        runAway
+        runAway,
+        dispatch
     }
 
 

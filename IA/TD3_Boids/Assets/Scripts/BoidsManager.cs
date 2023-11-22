@@ -39,32 +39,45 @@ public class BoidsManager : MonoBehaviour
         foreach (Boid b in l_boids)
         {
 
-            if (Vector3.Distance(b.getPosition(), characterPos.position) < distanceToCharacter)
-            {
-                b.currentState = StateMachine.State.runAway;
-            }
-            else
-            {
-                b.currentState = StateMachine.State.move;
-            }
 
             switch (b.currentState)
             {
                 case StateMachine.State.move:
-
                     move_boid_to_new_positions(b, false);
-                    break;
-                case StateMachine.State.gameLose:
-
+                    if (Vector3.Distance(b.getPosition(), characterPos.position) < distanceToCharacter)
+                    {
+                        b.currentState = StateMachine.State.runAway;
+                    }
+                    if (Input.GetKeyDown(KeyCode.Space))
+                    {
+                        vlim = 100;
+                        catchUpVelocity = 100;
+                        attractionForce = 10000;
+                        b.currentState = StateMachine.State.dispatch;
+                    }
                     break;
                 case StateMachine.State.runAway:
-
+                    if (Vector3.Distance(b.getPosition(), characterPos.position) > distanceToCharacter)
+                    {
+                        b.currentState = StateMachine.State.move;
+                    }
                     move_boid_to_new_positions(b, true);
+                    break;
+                case StateMachine.State.dispatch:
 
+                    move_boid_to_new_positions(b, false);
+                    if (Input.GetKeyDown(KeyCode.Space))
+                    {
+                        vlim = 50;
+                        catchUpVelocity = 10;
+                        attractionForce = 10;
+                        b.currentState = StateMachine.State.move;
+                    }
                     break;
                 default:
                     break;
             }
+
 
         }
 

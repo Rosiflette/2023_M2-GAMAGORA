@@ -9,44 +9,6 @@ public class Boid : MonoBehaviour
 
     public StateMachine.State currentState;
 
-//                switch (b.currentState)
-//            {
-//                case StateMachine.State.move:
-//                    move_boid_to_new_positions(b, false);
-//                    if (Vector3.Distance(b.getPosition(), characterPos.position) < distanceToCharacter)
-//                    {
-//                        b.currentState = StateMachine.State.runAway;
-//                    }
-//if (Input.GetKey(KeyCode.Space))
-//{
-//    vlim = 50;
-//    catchUpVelocity = 10;
-//    attractionForce = 10;
-//    b.currentState = StateMachine.State.dispatch;
-//}
-//break;
-//                case StateMachine.State.runAway:
-//                    if (Vector3.Distance(b.getPosition(), characterPos.position) > distanceToCharacter)
-//{
-//    b.currentState = StateMachine.State.move;
-//}
-//move_boid_to_new_positions(b, true);
-//break;
-//                case StateMachine.State.dispatch:
-//                    vlim = 100;
-//catchUpVelocity = 100;
-//attractionForce = 10000;
-//move_boid_to_new_positions(b, false);
-//if (Input.GetKey(KeyCode.Space))
-//{
-
-//    b.currentState = StateMachine.State.move;
-//}
-//break;
-//default:
-//                    break;
-//            }
-
     public Boid(Vector3 _velocity)
     {
         currentState = StateMachine.State.move;
