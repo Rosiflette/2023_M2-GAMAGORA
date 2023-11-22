@@ -6150,13 +6150,9 @@ MonoBehaviour:
   spaceBetween: 0.35
   catchUpVelocity: 10
   returnInRectangleVelocity: 2
-  minPos: {x: -10, y: -10, z: 0}
-  maxPos: {x: 10, y: 10, z: 0}
-  attractions:
-  - {x: -2.3597607e-30, y: 6.12e-43, z: 1e-45}
-  - {x: 0, y: -8.254732e+19, z: 6.12e-43}
-  - {x: 4.6e-44, y: 0, z: -2.3597607e-30}
-  - {x: 6.12e-43, y: -2.0280455e-26, z: 6.12e-43}
+  minPos: {x: -1, y: -1, z: 0}
+  maxPos: {x: 1, y: 1, z: 0}
+  attractions: []
   attractionForce: 10
   characterPos: {fileID: 673121954}
   repulsionForce: 15
