@@ -9,7 +9,7 @@ public class GeneticAlgorithm : MonoBehaviour
     [SerializeField] private int numberCharacters;
     [SerializeField] private GameObject characterPrefab;
 
-    private List<GameObject> listOfCharacters;
+    private List<GameObject> listOfCharacters = new List<GameObject>();
 
 
     void Start()
@@ -17,34 +17,44 @@ public class GeneticAlgorithm : MonoBehaviour
         InstantiateInitialCharacters();
     }
 
-
-    private void InstantiateInitialCharacters()
+    private void Update()
     {
-        for(int i = 0; i < numberCharacters; i++)
+        if (Input.GetKey(KeyCode.Space))
         {
+            GenerateNewCharacters();
 
-            Vector3 position = new Vector3(
-                Random.Range(0, gameObject.GetComponent<RectTransform>().rect.width),
-                Random.Range(0, gameObject.GetComponent<RectTransform>().rect.height), 0
-            );
-            
-            listOfCharacters.Add(Instantiate(characterPrefab, position,  Quaternion.identity));
         }
     }
 
-    private void GenerateNewCharacters(){
-        List<GameObject> orderByFitnessList = FitnessOfCharacters();
-        listOfCharacters.Clear();
 
-    }
-
-    private List<GameObject> FitnessOfCharacters(){
-        return listOfCharacters.OrderByDescending(o => o.GetComponent<DNA>().red).ToList();
-
-    }
-
-    void Update()
+    private void InstantiateInitialCharacters()
     {
-        
+        for (int i = 0; i < numberCharacters; i++)
+        {
+            float spawnX = Random.Range(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
+            float spawnY = Random.Range(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y, Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
+
+            Vector3 position = new Vector3(spawnX, spawnY, 0);
+            GameObject currentCharacter = Instantiate(characterPrefab, position, Quaternion.identity, gameObject.transform);
+            currentCharacter.GetComponent<DNA>().SetRandomColor(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
+            listOfCharacters.Add(currentCharacter);
+        }
     }
+
+
+    private void GenerateNewCharacters()
+    {
+        List<GameObject> orderByFitnessList = FitnessOfCharacters();
+        for (int i = 0; i < (int)numberCharacters / 2; i++)
+        {
+            orderByFitnessList[i].SetActive(false);
+        }
+        // listOfCharacters.Clear();
+    }
+
+    private List<GameObject> FitnessOfCharacters()
+    {
+        return listOfCharacters.OrderByDescending(o => o.GetComponent<DNA>().getRed()).Reverse().ToList();
+    }
+
 }
